@@ -431,14 +431,33 @@ body::after {
    RESPONSIVE
 =================================================================== */
 @media (max-width: 768px) {
-    .navbar { padding: 12px 18px; }
-    .hero { padding: 48px 16px 28px; }
-    .hero h1 { font-size: 1.7rem; }
-    .hero-big-numbers { flex-direction: column; align-items: center; }
+    .navbar { padding: 12px 18px; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .navbar-period { text-align: center; width: 100%; order: 3; margin-top: 4px; }
+    .hero { padding: 40px 16px 24px; }
+    .hero h1 { font-size: 1.6rem; }
+    .hero-big-numbers { flex-direction: column; align-items: stretch; }
+    .hero-big-card { width: 100%; }
     .kpi-grid { grid-template-columns: repeat(2, 1fr); }
     .container { padding: 0 16px 40px; }
+    .glass-card { padding: 20px; }
+    .chart-card { padding: 20px 16px; }
 }
-@media (max-width: 480px) { .kpi-grid { grid-template-columns: 1fr; } }
+@media (max-width: 600px) {
+    .hero-mini-insight { grid-template-columns: 1fr; gap: 12px; padding: 16px; }
+    .mini-insight-item { border-left: none; padding-left: 0; border-bottom: 1px solid var(--glass-border); padding-bottom: 10px; }
+    .mini-insight-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .section-title { font-size: 1.25rem; }
+    .kpi-grid { grid-template-columns: 1fr; }
+    .chart-container { height: 280px; }
+    .chart-container--tall { height: 320px; }
+    .exec-card { padding: 20px 16px; }
+}
+@media (max-width: 480px) { 
+    .rec-grid { grid-template-columns: 1fr; } 
+    .filter-bar { gap: 12px; flex-direction: column; align-items: stretch; }
+    .filter-group { justify-content: space-between; }
+    .filter-select { width: 100%; }
+}
 
 /* ===================================================================
    PRINT STYLES
