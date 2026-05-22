@@ -562,15 +562,29 @@ function renderSubcatChart(furn, periodShort) {
                     ctx.textBaseline = 'middle';
 
                     if (val < 0) {
-                        ctx.fillStyle = C.critical.line;
-                        ctx.textAlign = 'right';
-                        const labelX = meta.x - 8;
-                        ctx.fillText(`⚠ Loss $${fmt(val)}`, labelX, meta.y);
+                        const text = `⚠ Loss $${fmt(val)}`;
+                        const textW = ctx.measureText(text).width;
+                        if (meta.x - 8 - textW < chart.chartArea.left) {
+                            ctx.fillStyle = '#FFF';
+                            ctx.textAlign = 'left';
+                            ctx.fillText(text, meta.x + 8, meta.y);
+                        } else {
+                            ctx.fillStyle = C.critical.line;
+                            ctx.textAlign = 'right';
+                            ctx.fillText(text, meta.x - 8, meta.y);
+                        }
                     } else if (i === highIdx) {
-                        ctx.fillStyle = '#27AE60'; // Darker green for contrast against white background
-                        ctx.textAlign = 'left';
-                        const labelX = meta.x + 8;
-                        ctx.fillText(`Profit tertinggi $${fmt(val)} ⭐`, labelX, meta.y);
+                        const text = `Profit tertinggi $${fmt(val)} ⭐`;
+                        const textW = ctx.measureText(text).width;
+                        if (meta.x + 8 + textW > chart.chartArea.right) {
+                            ctx.fillStyle = '#FFF';
+                            ctx.textAlign = 'right';
+                            ctx.fillText(text, meta.x - 8, meta.y);
+                        } else {
+                            ctx.fillStyle = '#27AE60'; 
+                            ctx.textAlign = 'left';
+                            ctx.fillText(text, meta.x + 8, meta.y);
+                        }
                     }
                     ctx.restore();
                 });
@@ -680,6 +694,7 @@ function renderDiscountCharts(furn, periodShort) {
         options: {
             responsive: true, maintainAspectRatio: false,
             plugins: {
+                legend: { display: false },
                 tooltip: { callbacks: { label: ctx => { const d = dData[ctx.datasetIndex]; return `${d.name}: Disc ${d.avgDiscount.toFixed(1)}%, Margin ${d.margin.toFixed(2)}%`; } } }
             },
             scales: {
