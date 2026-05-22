@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dashboard analisis profitabilitas Furniture untuk C-Level. Fokus pada profitable growth.">
+    <title>Furniture Profitability Dashboard | Insight Bisnis</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-overlay">
+    <div class="loader-spinner"></div>
+    <div class="loader-text">Memuat data Superstore...</div>
+</div>
+
+<!-- Navbar -->
+<nav class="navbar no-print" id="navbar">
+    <div class="navbar-brand">
+        <span class="dot"></span>
+        Furniture Insight Dashboard
+    </div>
+    <div class="navbar-period" id="navbar-period">Semua Tahun · Semua Kuartal</div>
+    <button class="print-btn" onclick="preparePrint()">🖨️ Export PDF</button>
+</nav>
+
+<!-- Print Tip -->
+<div class="print-tip no-print">
+    💡 Export PDF: <strong>Ctrl+P</strong> → More settings → matikan <em>Headers and footers</em> → aktifkan <em>Background graphics</em> → Save as PDF
+</div>
+
+<!-- Main Content -->
+<div class="container">
+
+    <!-- ============================================================
+         HERO / HOOK
+    ============================================================ -->
+    <section class="hero" id="hero-section">
+        <div class="hero-badge">📊 EXECUTIVE DASHBOARD</div>
+        <h1>Revenue Furniture besar, tapi di mana profitnya <span class="highlight-text">bocor?</span></h1>
+        <p class="hero-subtitle">
+            Analisis ini menelusuri titik kebocoran margin dari sub-category, diskon, hingga region prioritas.
+        </p>
+        <div class="hero-core-message">
+            Tujuan dashboard adalah membantu manajemen berpindah dari sales growth menuju profitable growth.
+        </div>
+
+        <!-- Big Number Hero Cards -->
+        <div class="hero-big-numbers" id="hero-big-numbers">
+            <!-- Populated by JS -->
+        </div>
+        
+        <!-- Mini Insight Card -->
+        <div class="hero-mini-insight" id="hero-mini-insight">
+            <!-- Populated by JS -->
+        </div>
+
+        <!-- Filters -->
+        <div class="filter-bar no-print">
+            <div class="filter-group">
+                <span class="filter-label">Periode Tahun</span>
+                <select class="filter-select" id="filter-year">
+                    <option value="all">All Years</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Kuartal</span>
+                <select class="filter-select" id="filter-quarter">
+                    <option value="all">All Quarters</option>
+                    <option value="Q1">Q1</option>
+                    <option value="Q2">Q2</option>
+                    <option value="Q3">Q3</option>
+                    <option value="Q4">Q4</option>
+                </select>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         EXECUTIVE SUMMARY
+    ============================================================ -->
+    <section id="exec-summary" class="no-page-break">
+        <div class="glass-card exec-card">
+            <div class="exec-header">
+                <div class="section-step">Executive Summary</div>
+                <div class="exec-period" id="exec-period">Semua Tahun · Semua Kuartal</div>
+            </div>
+            <ul id="summary-list" class="summary-list">
+                <!-- Populated by JS -->
+            </ul>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         KPI CARDS
+    ============================================================ -->
+    <section id="kpi-section">
+        <div class="section-header">
+            <div class="section-step">Performa Utama</div>
+            <div class="section-title">Key Performance Indicators — Furniture</div>
+        </div>
+        <div class="kpi-grid" id="kpi-grid">
+            <!-- KPIs injected by JS -->
+        </div>
+    </section>
+
+    <!-- ============================================================
+         CONTEXT: CATEGORY COMPARISON
+    ============================================================ -->
+    <section class="chart-section page-break" id="sec-category">
+        <div class="section-header">
+            <div class="section-step">Context</div>
+            <div class="section-title">Furniture: Kontributor Sales Besar, tetapi Margin Paling Tertinggal</div>
+        </div>
+        <div class="glass-card chart-card">
+            <div class="chart-container">
+                <canvas id="chart-category"></canvas>
+            </div>
+            <div id="insight-category"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         CONFLICT: FURNITURE TREND
+    ============================================================ -->
+    <section class="chart-section page-break" id="sec-trend">
+        <div class="section-header">
+            <div class="section-step">Conflict</div>
+            <div class="section-title" id="conflict-title">Sales Furniture Tumbuh, tetapi Margin Belum Mengikuti Secara Proporsional</div>
+        </div>
+        <div class="glass-card chart-card">
+            <div class="chart-subtitle" id="trend-subtitle"></div>
+            <div class="chart-container">
+                <canvas id="chart-trend"></canvas>
+            </div>
+            <div id="insight-trend"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ROOT CAUSE 1: SUB-CATEGORY
+    ============================================================ -->
+    <section class="chart-section page-break" id="sec-subcat">
+        <div class="section-header">
+            <div class="section-step">Root Cause 1</div>
+            <div class="section-title" id="subcat-title">Tables dan Bookcases Menjadi Titik Rugi Utama Furniture</div>
+            <div class="section-desc" id="subcat-subtitle">Profit per sub-category menunjukkan bahwa kerugian terbesar berasal dari Tables dan Bookcases.</div>
+        </div>
+        <div class="glass-card chart-card">
+            <div class="chart-container chart-container--tall">
+                <canvas id="chart-subcat"></canvas>
+            </div>
+            <div id="insight-subcat"></div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         ROOT CAUSE 2: DISCOUNT VS PROFIT
+    ============================================================ -->
+    <section class="chart-section page-break" id="sec-discount">
+        <div class="section-header">
+            <div class="section-step">Root Cause 2</div>
+            <div class="section-title" id="discount-title">Diskon Tinggi Memperbesar Risiko Margin Negatif</div>
+            <div class="section-desc" id="discount-subtitle">Sub-category dengan average discount tinggi cenderung memiliki margin lebih rendah.</div>
+        </div>
+        <div class="two-col">
+            <div class="glass-card chart-card">
+                <div class="chart-title">Sales & Rata-Rata Diskon per Sub-Category</div>
+                <div class="chart-subtitle">Titik merah = profit negatif pada periode ini</div>
+                <div class="chart-container">
+                    <canvas id="chart-discount"></canvas>
+                </div>
+            </div>
+            <div class="glass-card chart-card">
+                <div class="chart-title">Sebaran Diskon vs Profit Margin</div>
+                <div class="chart-subtitle">Ukuran bubble = besar profit absolut</div>
+                <div class="chart-container">
+                    <canvas id="chart-discount-scatter"></canvas>
+                </div>
+            </div>
+        </div>
+        <div id="insight-discount" style="margin-top:16px;"></div>
+    </section>
+
+    <!-- ============================================================
+         INSIGHT REGIONAL
+    ============================================================ -->
+    <section class="chart-section page-break" id="sec-region">
+        <div class="section-header">
+            <div class="section-step">Insight Regional</div>
+            <div class="section-title">Tidak Semua Region Mencapai Profitabilitas yang Sama</div>
+        </div>
+        <div class="two-col">
+            <div class="glass-card chart-card">
+                <div class="chart-title">Profit Margin Furniture per Region</div>
+                <div class="chart-subtitle">Diurutkan dari margin terendah ke tertinggi</div>
+                <div class="chart-container">
+                    <canvas id="chart-region"></canvas>
+                </div>
+            </div>
+            <div class="glass-card chart-card">
+                <div class="chart-title">Detail Kinerja Regional</div>
+                <div style="overflow-x:auto; margin-top: 8px;">
+                    <table class="region-table" id="region-table">
+                        <thead>
+                            <tr>
+                                <th>Region</th>
+                                <th>Sales</th>
+                                <th>Profit</th>
+                                <th>Margin</th>
+                                <th>Avg Disc.</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="region-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div id="insight-region" style="margin-top:16px;"></div>
+    </section>
+
+    <!-- ============================================================
+         CALL TO ACTION
+    ============================================================ -->
+    <section class="chart-section page-break" id="sec-reco">
+        <div class="section-header">
+            <div class="section-step">Call to Action</div>
+            <div class="section-title">Action Plan: Langkah Konkret Menuju Profitable Growth</div>
+            <div class="section-desc" id="reco-period-label">Rekomendasi berdasarkan data periode terpilih.</div>
+        </div>
+        <div class="glass-card cta-card">
+            <div class="rec-grid" id="rec-grid">
+                <!-- Populated by JS -->
+            </div>
+        </div>
+    </section>
+
+</div>
+
+<!-- Footer -->
+<div class="footer no-print">
+    Dashboard Insight Bisnis — Data: Sample Superstore · Dibuat oleh Dea Kusuma Ningrum
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
