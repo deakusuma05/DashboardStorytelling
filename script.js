@@ -502,6 +502,7 @@ function renderSubcatChart(furn, periodShort) {
         },
         options: {
             responsive: true, maintainAspectRatio: false,
+            layout: { padding: { left: 80, right: 120 } },
             indexAxis: 'y',
             plugins: {
                 legend: { display: false },
@@ -557,19 +558,19 @@ function renderSubcatChart(furn, periodShort) {
                 chart.data.datasets[0].data.forEach((val, i) => {
                     const meta = chart.getDatasetMeta(0).data[i];
                     ctx.save();
-                    ctx.font = "bold 11px 'Poppins'";
+                    ctx.font = "bold 11.5px 'Poppins'";
                     ctx.textBaseline = 'middle';
 
                     if (val < 0) {
                         ctx.fillStyle = C.critical.line;
-                        ctx.textAlign = 'left';
-                        const labelX = Math.min(meta.x + 6, x.right - 60);
-                        ctx.fillText(`⚠ Loss  $${fmt(val)}`, labelX, meta.y);
-                    } else if (i === highIdx) {
-                        ctx.fillStyle = C.healthy.line;
                         ctx.textAlign = 'right';
-                        const labelX = Math.max(meta.x - 6, x.left + 80);
-                        ctx.fillText(`Profit tertinggi  $${fmt(val)} ⭐`, labelX, meta.y);
+                        const labelX = meta.x - 8;
+                        ctx.fillText(`⚠ Loss $${fmt(val)}`, labelX, meta.y);
+                    } else if (i === highIdx) {
+                        ctx.fillStyle = '#27AE60'; // Darker green for contrast against white background
+                        ctx.textAlign = 'left';
+                        const labelX = meta.x + 8;
+                        ctx.fillText(`Profit tertinggi $${fmt(val)} ⭐`, labelX, meta.y);
                     }
                     ctx.restore();
                 });
